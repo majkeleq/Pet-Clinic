@@ -4,6 +4,7 @@ package org.example.petclinictest.businesslayer.owner;
 import org.example.petclinictest.businesslayer.exceptions.OwnerNotFoundException;
 import org.example.petclinictest.businesslayer.mappers.OwnerMapper;
 import org.example.petclinictest.persistancelayer.OwnerRepository;
+import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,7 @@ public class OwnerController {
     OwnerRepository ownerRepository;
     OwnerMapper ownerMapper;
     OwnerModelAssembler assembler;
+
     public OwnerController(OwnerRepository ownerRepository, OwnerMapper ownerMapper, OwnerModelAssembler assembler) {
 
         this.ownerRepository = ownerRepository;
@@ -29,10 +31,17 @@ public class OwnerController {
     public String welcome() {
         return "welcome";
     }
+
     @GetMapping("/owners")
-    public List<OwnerDTO> getAllOwners() {
-        return ownerRepository.findAll().stream().map(ownerMapper::mapToOwnerDTO).toList();
+    public CollectionModel<EntityModel<OwnerDTO>> getAllOwners() {
+        List<EntityModel<OwnerDTO>> owners = ownerRepository.findAll()
+                .stream()
+                .map(ownerMapper::mapToOwnerDTO)
+                .map(assembler::toModel)
+                .toList();
+        return CollectionModel.of(owners, linkTo(methodOn(OwnerController.class).getAllOwners()).withSelfRel());
     }
+
     @GetMapping("/owners/{id}")
     public EntityModel<OwnerDTO> getOwner(@PathVariable Long id) {
         OwnerDTO dto = ownerMapper.mapToOwnerDTO(ownerRepository.findById(id).orElseThrow(() -> new OwnerNotFoundException(id)));
