@@ -1,18 +1,17 @@
-package org.example.petclinictest.businesslayer;
+package org.example.petclinictest.businesslayer.owner;
 
 import org.example.petclinictest.businesslayer.mappers.OwnerMapper;
 import org.example.petclinictest.persistancelayer.OwnerRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-public class ApiController {
+public class OwnerController {
 
     OwnerRepository ownerRepository;
     OwnerMapper ownerMapper;
-    public ApiController(OwnerRepository ownerRepository, OwnerMapper ownerMapper) {
+    public OwnerController(OwnerRepository ownerRepository, OwnerMapper ownerMapper) {
 
         this.ownerRepository = ownerRepository;
         this.ownerMapper = ownerMapper;
@@ -32,11 +31,11 @@ public class ApiController {
     }
 
     @PostMapping("/owners")
-    public Owner addOwner(@RequestBody OwnerDTO dto) {
+    public OwnerDTO addOwner(@RequestBody OwnerDTO dto) {
         Owner newOwner = ownerMapper.mapToOwner(dto);
         System.out.println(newOwner.getId());
         System.out.println(newOwner.getName());
         System.out.println(newOwner.getLastName());
-        return ownerRepository.save(newOwner);
+        return ownerMapper.mapToOwnerDTO(ownerRepository.save(newOwner));
     }
 }

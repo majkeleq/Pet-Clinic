@@ -1,4 +1,4 @@
-package org.example.petclinictest.businesslayer;
+package org.example.petclinictest.businesslayer.owner;
 
 public class OwnerDTO {
     private String name;

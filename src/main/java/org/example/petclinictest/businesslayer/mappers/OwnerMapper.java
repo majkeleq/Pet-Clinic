@@ -1,14 +1,13 @@
 package org.example.petclinictest.businesslayer.mappers;
 
-import org.example.petclinictest.businesslayer.Owner;
-import org.example.petclinictest.businesslayer.OwnerDTO;
+import org.example.petclinictest.businesslayer.owner.Owner;
+import org.example.petclinictest.businesslayer.owner.OwnerDTO;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface OwnerMapper {
 
-    public Owner mapToOwner(OwnerDTO dto);
+    Owner mapToOwner(OwnerDTO dto);
 
-    public OwnerDTO mapToOwnerDTO(Owner owner);
+    OwnerDTO mapToOwnerDTO(Owner owner);
 }
