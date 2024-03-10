@@ -17,10 +17,12 @@ public class OwnerController {
 
     OwnerRepository ownerRepository;
     OwnerMapper ownerMapper;
-    public OwnerController(OwnerRepository ownerRepository, OwnerMapper ownerMapper) {
+    OwnerModelAssembler assembler;
+    public OwnerController(OwnerRepository ownerRepository, OwnerMapper ownerMapper, OwnerModelAssembler assembler) {
 
         this.ownerRepository = ownerRepository;
         this.ownerMapper = ownerMapper;
+        this.assembler = assembler;
     }
 
     @GetMapping
@@ -34,9 +36,7 @@ public class OwnerController {
     @GetMapping("/owners/{id}")
     public EntityModel<OwnerDTO> getOwner(@PathVariable Long id) {
         OwnerDTO dto = ownerMapper.mapToOwnerDTO(ownerRepository.findById(id).orElseThrow(() -> new OwnerNotFoundException(id)));
-        return EntityModel.of(dto,
-                linkTo(methodOn(OwnerController.class).getOwner(id)).withSelfRel(),
-                linkTo(methodOn(OwnerController.class).getAllOwners()).withRel("owners"));
+        return assembler.toModel(dto);
     }
 
     @PostMapping("/owners")
