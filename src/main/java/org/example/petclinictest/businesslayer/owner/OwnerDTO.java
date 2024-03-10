@@ -1,8 +1,17 @@
 package org.example.petclinictest.businesslayer.owner;
 
 public class OwnerDTO {
+    private Long id;
     private String name;
     private String lastName;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
