@@ -2,9 +2,13 @@ package org.example.petclinictest.businesslayer.owner;
 
 import org.example.petclinictest.businesslayer.mappers.OwnerMapper;
 import org.example.petclinictest.persistancelayer.OwnerRepository;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 public class OwnerController {
@@ -26,8 +30,11 @@ public class OwnerController {
         return ownerRepository.findAll().stream().map(ownerMapper::mapToOwnerDTO).toList();
     }
     @GetMapping("/owners/{id}")
-    public OwnerDTO getOwner(@PathVariable Long id) {
-        return ownerMapper.mapToOwnerDTO(ownerRepository.findById(id).orElse(null));
+    public EntityModel<OwnerDTO> getOwner(@PathVariable Long id) {
+        OwnerDTO dto = ownerMapper.mapToOwnerDTO(ownerRepository.findById(id).orElse(null));
+        return EntityModel.of(dto,
+                linkTo(methodOn(OwnerController.class).getOwner(id)).withSelfRel(),
+                linkTo(methodOn(OwnerController.class).getAllOwners()).withRel("owners"));
     }
 
     @PostMapping("/owners")
