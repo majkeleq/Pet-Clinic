@@ -1,5 +1,7 @@
 package org.example.petclinictest.businesslayer.owner;
 
+
+import org.example.petclinictest.businesslayer.exceptions.OwnerNotFoundException;
 import org.example.petclinictest.businesslayer.mappers.OwnerMapper;
 import org.example.petclinictest.persistancelayer.OwnerRepository;
 import org.springframework.hateoas.EntityModel;
@@ -31,7 +33,7 @@ public class OwnerController {
     }
     @GetMapping("/owners/{id}")
     public EntityModel<OwnerDTO> getOwner(@PathVariable Long id) {
-        OwnerDTO dto = ownerMapper.mapToOwnerDTO(ownerRepository.findById(id).orElse(null));
+        OwnerDTO dto = ownerMapper.mapToOwnerDTO(ownerRepository.findById(id).orElseThrow(() -> new OwnerNotFoundException(id)));
         return EntityModel.of(dto,
                 linkTo(methodOn(OwnerController.class).getOwner(id)).withSelfRel(),
                 linkTo(methodOn(OwnerController.class).getAllOwners()).withRel("owners"));
