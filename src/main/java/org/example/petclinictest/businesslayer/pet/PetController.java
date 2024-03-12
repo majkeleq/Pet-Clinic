@@ -3,10 +3,7 @@ package org.example.petclinictest.businesslayer.pet;
 import org.example.petclinictest.businesslayer.exceptions.PetNotFoundException;
 import org.example.petclinictest.businesslayer.mappers.PetMapper;
 import org.example.petclinictest.persistancelayer.PetRepository;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,5 +26,10 @@ public class PetController {
     @GetMapping
     public List<PetDTO> getAllPets() {
         return petRepository.findAll().stream().map(petMapper::mapToPetDTO).toList();
+    }
+    @PostMapping
+    public PetDTO addPet(@RequestBody PetDTO dto) {
+        Pet entity = petMapper.mapToPet(dto);
+        return petMapper.mapToPetDTO(petRepository.save(entity));
     }
 }
