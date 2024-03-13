@@ -1,9 +1,22 @@
 package org.example.petclinictest.businesslayer.owner;
 
+import org.example.petclinictest.businesslayer.pet.PetDTO;
+
+import java.util.List;
+
 public class OwnerDTO {
     private Long id;
     private String name;
     private String lastName;
+    private List<PetDTO> pets;
+
+    public List<PetDTO> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<PetDTO> pets) {
+        this.pets = pets;
+    }
 
     public Long getId() {
         return id;
