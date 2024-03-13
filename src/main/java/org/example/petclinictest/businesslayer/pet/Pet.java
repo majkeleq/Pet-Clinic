@@ -10,7 +10,7 @@ import org.example.petclinictest.businesslayer.owner.Owner;
 public class Pet extends NamedEntity {
     String petType;
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "owner_id")
     private Owner owner;
 
     public String getPetType() {
