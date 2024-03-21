@@ -5,7 +5,7 @@ import org.example.petclinictest.businesslayer.owner.OwnerDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = PetMapper.class)
 public interface OwnerMapper {
 
     @Mapping(ignore = true, target = "pets")

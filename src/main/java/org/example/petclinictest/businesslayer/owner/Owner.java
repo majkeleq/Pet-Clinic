@@ -14,4 +14,8 @@ public class Owner extends Person {
 
     @OneToMany(mappedBy = "owner", cascade = CascadeType.REMOVE, orphanRemoval=true)
     private List<Pet> pets = new ArrayList<>();
+
+    public List<Pet> getPets() {
+        return pets;
+    }
 }

@@ -6,14 +6,14 @@ public class PetDTO {
     private Long id;
     private String name;
     private String petType;
-    private OwnerDTO owner;
+    private Long ownerId;
 
-    public OwnerDTO getOwner() {
-        return owner;
+    public Long getOwnerId() {
+        return ownerId;
     }
 
-    public void setOwner(OwnerDTO owner) {
-        this.owner = owner;
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public Long getId() {
