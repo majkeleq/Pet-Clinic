@@ -1,8 +1,10 @@
 package org.example.petclinictest.businesslayer.owner;
 
 
+import org.example.petclinictest.businesslayer.PetOwnerService;
 import org.example.petclinictest.businesslayer.exceptions.OwnerNotFoundException;
 import org.example.petclinictest.businesslayer.mappers.OwnerMapper;
+import org.example.petclinictest.businesslayer.pet.PetDTO;
 import org.example.petclinictest.persistancelayer.OwnerRepository;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
@@ -21,12 +23,13 @@ public class OwnerController {
     OwnerRepository ownerRepository;
     OwnerMapper ownerMapper;
     OwnerModelAssembler assembler;
+    PetOwnerService petOwnerService;
 
-    public OwnerController(OwnerRepository ownerRepository, OwnerMapper ownerMapper, OwnerModelAssembler assembler) {
-
+    public OwnerController(OwnerRepository ownerRepository, OwnerMapper ownerMapper, OwnerModelAssembler assembler, PetOwnerService petOwnerService) {
         this.ownerRepository = ownerRepository;
         this.ownerMapper = ownerMapper;
         this.assembler = assembler;
+        this.petOwnerService = petOwnerService;
     }
 
     @GetMapping
@@ -36,9 +39,8 @@ public class OwnerController {
 
     @GetMapping("/owners")
     public CollectionModel<EntityModel<OwnerDTO>> getAllOwners() {
-        List<EntityModel<OwnerDTO>> owners = ownerRepository.findAll()
+        List<EntityModel<OwnerDTO>> owners = petOwnerService.getAllOwners()
                 .stream()
-                .map(ownerMapper::mapToOwnerDTO)
                 .map(assembler::toModel)
                 .toList();
         return CollectionModel.of(owners, linkTo(methodOn(OwnerController.class).getAllOwners()).withSelfRel());
@@ -46,15 +48,22 @@ public class OwnerController {
 
     @GetMapping("/owners/{id}")
     public EntityModel<OwnerDTO> getOwner(@PathVariable Long id) {
-        OwnerDTO dto = ownerMapper.mapToOwnerDTO(ownerRepository.findById(id).orElseThrow(() -> new OwnerNotFoundException(id)));
+        OwnerDTO dto = petOwnerService.getOwner(id);
         return assembler.toModel(dto);
     }
 
     @PostMapping("/owners")
     public ResponseEntity<?> addOwner(@RequestBody OwnerDTO dto) {
-        Owner newOwner = ownerMapper.mapToOwner(dto);
 
-        EntityModel<OwnerDTO> entityModel = assembler.toModel(ownerMapper.mapToOwnerDTO(ownerRepository.save(newOwner)));
+        EntityModel<OwnerDTO> entityModel = assembler.toModel(petOwnerService.addOwner(dto));
+        return ResponseEntity
+                .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(entityModel);
+    }
+
+    @PostMapping("/owners/{ownerId}/pet")
+    public ResponseEntity<?> addPet(@RequestBody PetDTO dto, @PathVariable Long ownerId) {
+        EntityModel<OwnerDTO> entityModel = assembler.toModel(petOwnerService.addPet(dto, ownerId));
         return ResponseEntity
                 .created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);

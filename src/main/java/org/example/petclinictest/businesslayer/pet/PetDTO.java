@@ -1,9 +1,20 @@
 package org.example.petclinictest.businesslayer.pet;
 
+import org.example.petclinictest.businesslayer.owner.OwnerDTO;
+
 public class PetDTO {
     private Long id;
     private String name;
     private String petType;
+    private Long ownerId;
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
+    }
 
     public Long getId() {
         return id;
